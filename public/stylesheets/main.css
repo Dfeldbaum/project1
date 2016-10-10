@@ -1,11 +1,31 @@
 body {
-  padding: 50px;
-  background-color: white;
+  background-color: #000000;
 }
 a {
   color: #00B7FF;
 }
 h1 {
-  color: black;
-  font-family: 'Press Start 2P', cursive;
+  color: #ffffff;
+  font-family: 'Bungee Outline', cursive;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 3.3rem;
+}
+#gamediv {
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+#gamediv canvas {
+  margin: 0px auto;
+  border: 2px solid #000000;
+}
+#title {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+#wrapper {
+  width: 70%;
+  margin: 0 auto;
 }
