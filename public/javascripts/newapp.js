@@ -1,4 +1,4 @@
-
+console.log('linked');
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload, create: create, update: update }); // empty string is id for canvas el
 
@@ -18,12 +18,16 @@ function preload() {
     game.load.image('eliptical', 'images/eliptical-70.png');
     game.load.image('abbench', 'images/abbench-70.png');
     game.load.image('bench', 'images/bench-70.png');
+    game.load.image('rack', 'images/rack-41.png');
+    game.load.image('row', 'images/row-80.png');
     game.load.spritesheet('ronnie', 'images/ronniespritesheet2.png', 33, 48);
+    game.load.spritesheet('grandpa', 'images/grandpa-0.png', 33, 48);
+
     
 }
 
 function create() {
-    // Create Game World // 
+    // Create Game world 
     // Add physics engine
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -31,14 +35,34 @@ function create() {
     game.world.setBounds(0, 0, 800, 600);
     background = game.add.tileSprite(0, 0, 800, 600, 'wood');
 
-    // Create Ronnie player //
-    player = game.add.sprite(375, 275, 'ronnie');
+    // Create ronnie player 
+    player = game.add.sprite(390, 300, 'ronnie');
     game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
     player.animations.add('left', [1], 10, true);
     player.animations.add('right', [2], 10, true);
     player.animations.add('up', [0], 10, true);
     player.animations.add('down', [0], 10, true);
+
+
+    // Create grandpa enemies (as sprite)
+    // grandpa = game.add.sprite(475, 410, 'grandpa');
+    // game.physics.arcade.enable(grandpa);
+    // grandpa.body.collideWorldBounds = true;
+    // grandpa.animations.add('left', [0], 10, true);
+    // grandpa.animations.add('right', [0], 10, true);
+    // grandpa.animations.add('up', [0], 10, true);
+    // grandpa.animations.add('down', [0], 10, true);
+
+    // Create grandpa enemies (with group, loop) 
+    grandpas = game.add.group();
+   	for (var i = 0; i < 8; i++) {
+   		createGrandpas();
+   	}
+
+
+
+
 
     // Create Milk objects in a group //
     // milks = game.add.group();
@@ -49,7 +73,7 @@ function create() {
     //     var milk = milks.create(i * 50, 400, 'milk');
     // }
 
-    // Create treadmill obstacle group
+    // Create treadmill group
 
     treadmills = game.add.group();
     treadmills.enableBody = true;
@@ -87,7 +111,7 @@ function create() {
 	treadmillUp = treadmills.create(750, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
-   	// Create treadmill-down obstacles (in treadmill group) 
+   	// Create treadmill-down (in treadmill group) 
    	var treadmillDown = treadmills.create(15, 515, 'treadmill-down');
     treadmillDown.body.immovable = true;
 
@@ -121,7 +145,7 @@ function create() {
    	treadmillDown = treadmills.create(515, 515, 'treadmill-down');
    	treadmillDown.body.immovable = true;
 
-   	// Create yoga mat obstacle group
+   	// Create yoga mat group
    	yogamats = game.add.group();
     yogamats.enableBody = true;
 
@@ -131,33 +155,21 @@ function create() {
    	yogamat = yogamats.create(650, 533, 'yogamat');
    	yogamat.body.immovable = true;
 
-   	// Create gymball obstacle group, physics
+   	// Create gymball group, physics
    	gymballs = game.add.group();
     gymballs.enableBody = true;
 
     var gymball = gymballs.create(740, 559, 'gymball');
     gymball.body.immovable = false;
     gymball.body.collideWorldBounds = true;
-    gymball.body.bounce.y = 0.2;
-    gymball.body.bounce.x = 0.2;
+    gymball.body.bounce.y = 0.5;
+    gymball.body.bounce.x = 0.5;
 
    	gymball = gymballs.create(740, 527, 'gymball');
    	gymball.body.immovable = false;
    	gymball.body.collideWorldBounds = true;
-   	gymball.body.bounce.y = 0.2;
-    gymball.body.bounce.x = 0.2;
-
-   	// var gymball = gymballs.create(760, 557, 'gymball');
-    // gymball.body.immovable = false;
-    // gymball.body.collideWorldBounds = true;
-    // gymball.body.bounce.y = 0.2;
-    // gymball.body.bounce.x = 0.2;
-
-   	// gymball = gymballs.create(760, 525, 'gymball');
-   	// gymball.body.immovable = false;
-   	// gymball.body.collideWorldBounds = true;
-   	// gymball.body.bounce.y = 0.2;
-   	// gymball.body.bounce.x = 0.2;
+   	gymball.body.bounce.y = 0.5;
+    gymball.body.bounce.x = 0.5;
 
    	// Create eliptical group
    	elipticals = game.add.group();
@@ -198,11 +210,31 @@ function create() {
    	bench = benches.create(10, 350, 'bench');
    	bench.body.immovable = true;
 
+	// Create rack group
+   	racks = game.add.group();
+    racks.enableBody = true;
 
+   	var rack = racks.create(555, 248, 'rack');
+    rack.body.immovable = true;
 
+    rack = racks.create(555, 315, 'rack');
+    rack.body.immovable = true;
+
+	// Create row group
+   	rows = game.add.group();
+    rows.enableBody = true;
+
+   	var row = rows.create(148, 240, 'row');
+    row.body.immovable = true;
+
+    row = rows.create(148, 290, 'row');
+    row.body.immovable = true;
+
+    row = rows.create(148, 340, 'row');
+    row.body.immovable = true;
 
     // Add score text
-    scoreText = game.add.text(25, 15, 'protein pts: 0', { fontSize: '28px', fill: '#000' }); 
+    scoreText = game.add.text(15, 15, 'protein pts: 0', { fontSize: '28px', fill: '#000' }); 
 
     // Controls 
     cursors = game.input.keyboard.createCursorKeys();
@@ -213,7 +245,7 @@ function update() {
 
 	// Create seperation with collisions
 	game.physics.arcade.collide(player, treadmills);
-	// game.physics.arcade.collide(player, yogamats);
+	game.physics.arcade.collide(player, yogamats);
 	game.physics.arcade.collide(player, gymballs);
 	game.physics.arcade.collide(treadmills, gymballs);
 	game.physics.arcade.collide(gymballs, gymballs);
@@ -223,10 +255,15 @@ function update() {
 	game.physics.arcade.collide(abbenches, gymballs);
 	game.physics.arcade.collide(player, benches);
 	game.physics.arcade.collide(benches, gymballs);
+	game.physics.arcade.collide(player, racks);
+	game.physics.arcade.collide(racks, gymballs);
+	game.physics.arcade.collide(player, rows);
+	game.physics.arcade.collide(rows, gymballs);
 
 
 
 	// Create overlap collision physics
+	// game.physics.arcade.overlap(grandpa, player, killRonnie, null, this);	
 	// game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
 	// game.physics.arcade.overlap(player, yogamats, null, null, this);
 
@@ -235,7 +272,11 @@ function update() {
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
 
-    // Connect left/right controls to Ronnie player 
+    // Reset grandpa movement (left/right/up/down)
+    // grandpa.body.velocity.x = 0;
+    // grandpa.body.velocity.y = 0;
+
+    // Ronnie player controls - left/right 
     if (cursors.left.isDown) {
         // move player left with 150 speed
         player.body.velocity.x = -150;
@@ -253,7 +294,7 @@ function update() {
         player.frame = 4;
     }
 
-    // Connect up/down controls to Ronnie player
+    // Ronnie player controls - up/down 
     if (cursors.up.isDown) {
     	// move player up with 150 speed
     	player.body.velocity.y = -150;
@@ -270,6 +311,9 @@ function update() {
         player.frame = 4;
     }
 
+    function killRonnie (grandpa, player) {
+    	player.kill();
+    }
 
 //     function drinkMilk (player, milk) {
 //     	milk.kill();
@@ -279,11 +323,8 @@ function update() {
 
 }
 
+function createGrandpas() {
+		grandpas.create(280 + Math.random() * 200, 340 + Math.random() * 200, 'grandpa');
 
-
-
-
-
-
-
+}
 
