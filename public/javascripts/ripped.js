@@ -4,13 +4,15 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload,
 
 var player;
 var cursors;
-var milkCartons;
 var score = 0;
+var milks;
+
+
 
 function preload() {
 
-    game.load.image('wood', 'images/wood.png');
-    game.load.image('milk', 'images/milkcarton.png');
+    game.load.image('wood', 'images/wood-800.png');
+    game.load.image('milk', 'images/milk-carton-28.png');
     game.load.image('treadmill-up', 'images/treadmill-up-80.png');
     game.load.image('treadmill-down', 'images/treadmill-down-80.png');
     game.load.image('yogamat', 'images/yoga-mat-65.png');
@@ -46,27 +48,34 @@ function create() {
 
 
     // Create grandpa enemies (as sprite)
-    // grandpa = game.add.sprite(475, 410, 'grandpa');
-    // game.physics.arcade.enable(grandpa);
-    // grandpa.body.collideWorldBounds = true;
-    // grandpa.animations.add('left', [0], 10, true);
-    // grandpa.animations.add('right', [0], 10, true);
-    // grandpa.animations.add('up', [0], 10, true);
-    // grandpa.animations.add('down', [0], 10, true);
+    enemy = game.add.sprite(475, 410, 'grandpa');
+    game.physics.arcade.enable(enemy);
+    enemy.body.collideWorldBounds = true;
+    enemy.animations.add('left', [0], 10, true);
+    enemy.animations.add('right', [0], 10, true);
+    enemy.animations.add('up', [0], 10, true);
+    enemy.animations.add('down', [0], 10, true);
 
     // Create grandpa enemies (with group, loop) 
-    grandpas = game.add.group();
-   	for (var i = 0; i < 8; i++) {
-   		createGrandpas();
-   	}
+    // grandpas = game.add.group();
+   	// for (var i = 0; i < 8; i++) {
+   	// 	createGrandpas();
+   	// }
 
 
+    // Create Milk objects in a group 
+    milks = game.add.group();
+    milks.enableBody = true;
+    var firstMilk = milks.create(400, 230, 'milk');
+    // var milk = milks.create(500,480,'milk');
+    // milkGenerator();
+    // var milk = milks.create(20, 450, 'milk');
+    // milkGenerate();
 
 
+  
 
-    // Create Milk objects in a group //
-    // milks = game.add.group();
-    // milks.enableBody = true;
+
     // // Create milk cartons
     // for (var i = 0; i < 10; i++) {
     // 	// create the actual star
@@ -102,13 +111,13 @@ function create() {
    	treadmillUp = treadmills.create(600, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
-	treadmillUp = treadmills.create(650, 5, 'treadmill-up');
+	  treadmillUp = treadmills.create(650, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
-	treadmillUp = treadmills.create(700, 5, 'treadmill-up');
+  	treadmillUp = treadmills.create(700, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
-	treadmillUp = treadmills.create(750, 5, 'treadmill-up');
+  	treadmillUp = treadmills.create(750, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
    	// Create treadmill-down (in treadmill group) 
@@ -189,15 +198,15 @@ function create() {
    	eliptical.body.immovable = true;
 
 
-	// Create ab bench
-	abbenches = game.add.group();
+	  // Create ab bench
+	  abbenches = game.add.group();
     abbenches.enableBody = true;
 
    	var abbench = abbenches.create(10, 210, 'abbench');
     abbench.body.immovable = true;
 
 
-	// Create bench group
+	  // Create bench group
    	benches = game.add.group();
     benches.enableBody = true;
 
@@ -210,7 +219,7 @@ function create() {
    	bench = benches.create(10, 350, 'bench');
    	bench.body.immovable = true;
 
-	// Create rack group
+	  // Create rack group
    	racks = game.add.group();
     racks.enableBody = true;
 
@@ -220,24 +229,29 @@ function create() {
     rack = racks.create(555, 315, 'rack');
     rack.body.immovable = true;
 
-	// Create row group
+	  // Create row group
    	rows = game.add.group();
     rows.enableBody = true;
 
-   	var row = rows.create(148, 240, 'row');
+   	var row = rows.create(175, 240, 'row');
     row.body.immovable = true;
 
-    row = rows.create(148, 290, 'row');
+    row = rows.create(175, 290, 'row');
     row.body.immovable = true;
 
-    row = rows.create(148, 340, 'row');
+    row = rows.create(175, 340, 'row');
     row.body.immovable = true;
 
     // Add score text
-    scoreText = game.add.text(15, 15, 'protein pts: 0', { fontSize: '28px', fill: '#000' }); 
+    scoreText = game.add.text(15, 15, 'protein pts: 0', { fontSize: '28px', fill: '#000' });
+    
 
     // Controls 
     cursors = game.input.keyboard.createCursorKeys();
+
+
+    game.time.events.repeat(Phaser.Timer.SECOND * 10, 10, createMilkLeft, this);
+    game.time.events.repeat(Phaser.Timer.SECOND * 15, 10, createMilkTopRight, this);
 
 }    
 
@@ -259,13 +273,14 @@ function update() {
 	game.physics.arcade.collide(racks, gymballs);
 	game.physics.arcade.collide(player, rows);
 	game.physics.arcade.collide(rows, gymballs);
+  game.physics.arcade.collide(player, enemy);
 
+	
 
 
 	// Create overlap collision physics
 	// game.physics.arcade.overlap(grandpa, player, killRonnie, null, this);	
-	// game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
-	// game.physics.arcade.overlap(player, yogamats, null, null, this);
+	game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
 
     
     // Reset player movement (left/right/up/down)
@@ -311,20 +326,50 @@ function update() {
         player.frame = 4;
     }
 
-    function killRonnie (grandpa, player) {
-    	player.kill();
+
+    if (score === 100) {
+    game.add.text(15, 50, 'YOU WIN! WOO!', { fontSize: '28px', fill: '#000' });
     }
 
-//     function drinkMilk (player, milk) {
-//     	milk.kill();
-//     	score += 5;
-//     	scoreText.text = 'protein pts: ' + score;
-//     }
 
 }
 
-function createGrandpas() {
-		grandpas.create(280 + Math.random() * 200, 340 + Math.random() * 200, 'grandpa');
 
-}
+
+var drinkMilk = function(player, milks) {
+	milks.kill();
+	score += 10;
+	scoreText.text = 'protein pts: ' + score;
+}  
+
+var createMilkLeft = function ()  {
+    milks.create(20 + Math.random() * 300, 450, 'milk');
+    console.log('left milk created')
+}  
+
+
+var createMilkTopRight = function ()  {
+    milks.create(450 + Math.random() * 300, 150, 'milk');
+    console.log('top right milk created')
+}  
+
+
+
+
+// function killRonnie (grandpa, player) {
+// player.kill();
+// }
+
+// function createGrandpas() {
+//     grandpas.create(280 + Math.random() * 200, 340 + Math.random() * 200, 'grandpa');
+// }
+
+
+
+
+
+
+
+
+
 
