@@ -6,6 +6,10 @@ var player;
 var cursors;
 var score = 0;
 var milks;
+var music;
+
+
+
 
 
 function preload() {
@@ -23,20 +27,23 @@ function preload() {
     game.load.image('row', 'images/row-80.png');
     game.load.spritesheet('ronnie', 'images/ronniespritesheet2.png', 33, 48);
     game.load.spritesheet('grandpa', 'images/grandpa-2-cropped.png', 30, 48);
+    game.load.audio('oldman', 'audio/oldman.mp3');
 
     
 }
 
+var audio1 = document.createElement('audio');
+audio1.src = 'audio/oldman.mp3'
+
 function create() {
-    // Create Game world 
-    // Add physics engine
+    // game physics engine
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    // Add background for world (tiled)
+    // background for tilemap world
     game.world.setBounds(0, 0, 800, 600);
     background = game.add.tileSprite(0, 0, 800, 600, 'wood');
 
-    // Create ronnie player 
+    // ronnie player 
     player = game.add.sprite(390, 300, 'ronnie');
     game.physics.arcade.enable(player);
     player.body.collideWorldBounds = true;
@@ -46,35 +53,33 @@ function create() {
     player.animations.add('down', [0], 10, true);
 
 
-    // Create grandpa enemies (as group)
-    
-    this.enemyPool = game.add.group();
-    this.enemyPool.enableBody = true;
-    game.physics.arcade.enable(this.enemyPool);
-    this.enemyPool.createMultiple(25, 'grandpa');
-    this.enemyPool.setAll('anchor.x', 0.5);
-    this.enemyPool.setAll('anchor.y', 0.5);
-    this.enemyPool.setAll('outOfBoundsKill', true);
-    this.enemyPool.setAll('checkWorldBounds', true);
-    this.enemyPool.forEach(function (enemy) {
+    // enemy group 
+    enemyPool = game.add.group();
+    enemyPool.enableBody = true;
+    game.physics.arcade.enable(enemyPool);
+    enemyPool.createMultiple(25, 'grandpa');
+    enemyPool.setAll('anchor.x', 0.5);
+    enemyPool.setAll('anchor.y', 0.5);
+    enemyPool.setAll('outOfBoundsKill', true);
+    enemyPool.setAll('checkWorldBounds', true);
+    enemyPool.forEach(function (enemy) {
       enemy.animations.add('up', [0,1,2,3], 10, true);
     });
-    this.nextEnemyAt = 0;
-    this.enemyDelay = 1000;
+    game.nextEnemyAt = 0;
+    game.enemyDelay = 1000;
 
 
-    // Create Milk objects in a group 
+    // milk protein group 
     milks = game.add.group();
     milks.enableBody = true;
     var firstMilk = milks.create(400, 230, 'milk');
 
 
-    // Create treadmill group
-
+    // treadmill group
     treadmills = game.add.group();
     treadmills.enableBody = true;
 
-    var treadmillUp = treadmills.create(250, 5, 'treadmill-up');
+    treadmillUp = treadmills.create(250, 5, 'treadmill-up');
     treadmillUp.body.immovable = true;
 
    	treadmillUp = treadmills.create(300, 5, 'treadmill-up');
@@ -98,7 +103,7 @@ function create() {
    	treadmillUp = treadmills.create(600, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
-	  treadmillUp = treadmills.create(650, 5, 'treadmill-up');
+	treadmillUp = treadmills.create(650, 5, 'treadmill-up');
    	treadmillUp.body.immovable = true;
 
   	treadmillUp = treadmills.create(700, 5, 'treadmill-up');
@@ -108,7 +113,7 @@ function create() {
    	treadmillUp.body.immovable = true;
 
    	// Create treadmill-down (in treadmill group) 
-   	var treadmillDown = treadmills.create(15, 515, 'treadmill-down');
+   	treadmillDown = treadmills.create(15, 515, 'treadmill-down');
     treadmillDown.body.immovable = true;
 
     treadmillDown = treadmills.create(65, 515, 'treadmill-down');
@@ -141,38 +146,37 @@ function create() {
    	treadmillDown = treadmills.create(515, 515, 'treadmill-down');
    	treadmillDown.body.immovable = true;
 
-   	// Create yoga mat group
+   	// yoga mat group
    	yogamats = game.add.group();
     yogamats.enableBody = true;
 
-    var yogamat = yogamats.create(650, 563, 'yogamat');
+    yogamat = yogamats.create(650, 563, 'yogamat');
     yogamat.body.immovable = true;
 
    	yogamat = yogamats.create(650, 533, 'yogamat');
    	yogamat.body.immovable = true;
 
-   	// Create gymball group, physics
+   	// gymball group, physics
    	gymballs = game.add.group();
     gymballs.enableBody = true;
 
-    var gymball = gymballs.create(740, 559, 'gymball');
+    gymball = gymballs.create(740, 559, 'gymball');
     gymball.body.immovable = false;
-    gymball.body.collideWorldBounds = true;
+    gymball.body.collideWorldBounds = false;
     gymball.body.bounce.y = 0.5;
     gymball.body.bounce.x = 0.5;
 
    	gymball = gymballs.create(740, 527, 'gymball');
    	gymball.body.immovable = false;
-   	gymball.body.collideWorldBounds = true;
+   	gymball.body.collideWorldBounds = false;
    	gymball.body.bounce.y = 0.5;
     gymball.body.bounce.x = 0.5;
 
-   	// Create eliptical group
+   	// eliptical group
    	elipticals = game.add.group();
     elipticals.enableBody = true;
 
-
-   	var eliptical = elipticals.create(720, 210, 'eliptical');
+   	eliptical = elipticals.create(720, 210, 'eliptical');
     eliptical.body.immovable = true;
 
     eliptical = elipticals.create(720, 260, 'eliptical');
@@ -185,19 +189,19 @@ function create() {
    	eliptical.body.immovable = true;
 
 
-	  // Create ab bench
-	  abbenches = game.add.group();
+	// ab bench group
+	abbenches = game.add.group();
     abbenches.enableBody = true;
 
-   	var abbench = abbenches.create(10, 210, 'abbench');
+   	abbench = abbenches.create(10, 210, 'abbench');
     abbench.body.immovable = true;
 
 
-	  // Create bench group
+	// bench group
    	benches = game.add.group();
     benches.enableBody = true;
 
-   	var bench = benches.create(10, 250, 'bench');
+   	bench = benches.create(10, 250, 'bench');
     bench.body.immovable = true;
 
    	bench = benches.create(10, 300, 'bench');
@@ -210,7 +214,7 @@ function create() {
    	racks = game.add.group();
     racks.enableBody = true;
 
-   	var rack = racks.create(555, 248, 'rack');
+   	rack = racks.create(555, 248, 'rack');
     rack.body.immovable = true;
 
     rack = racks.create(555, 315, 'rack');
@@ -220,7 +224,7 @@ function create() {
    	rows = game.add.group();
     rows.enableBody = true;
 
-   	var row = rows.create(175, 240, 'row');
+   	row = rows.create(175, 240, 'row');
     row.body.immovable = true;
 
     row = rows.create(175, 290, 'row');
@@ -229,22 +233,24 @@ function create() {
     row = rows.create(175, 340, 'row');
     row.body.immovable = true;
 
-    // Add score text
+    // score text
     scoreText = game.add.text(15, 15, 'protein pts: 0', { fontSize: '28px', fill: '#000' });
     
 
-    // Controls 
+    // create controls 
     cursors = game.input.keyboard.createCursorKeys();
 
-
+    // timed events for milk generator functions
     game.time.events.repeat(Phaser.Timer.SECOND * 10, 10, createMilkLeft, this);
     game.time.events.repeat(Phaser.Timer.SECOND * 15, 10, createMilkTopRight, this);
 
+    // game.add.audio('oldman')
+    // game.sound.setDecodedCallback('oldman', start, this);
 }    
 
 function update() {
 
-	// Create seperation with collisions
+	// seperation with collisions
 	game.physics.arcade.collide(player, treadmills);
 	game.physics.arcade.collide(player, yogamats);
 	game.physics.arcade.collide(player, gymballs);
@@ -262,100 +268,94 @@ function update() {
 	game.physics.arcade.collide(rows, gymballs);
 
 	
+	// overlap collisions
+  	game.physics.arcade.overlap(player, enemyPool, loseGame, null, this);  
 
-	// Create overlap collision physics
-
-
-  game.physics.arcade.overlap(player, this.enemyPool, killRonnie, null, this);  
-
-  game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
+	game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
   
-  // Enemy spawner 
-  if (this.nextEnemyAt < this.time.now && this.enemyPool.countDead() > 0) {
-      this.nextEnemyAt = this.time.now + this.enemyDelay;
-      var enemy = this.enemyPool.getFirstExists(false);
-      enemy.reset(this.rnd.integerInRange(20, 780), 0);
-      enemy.body.velocity.y = this.rnd.integerInRange(30, 60);
-      enemy.play('up');
-    }
-  
-  // Reset player movement (left/right/up/down)
-  player.body.velocity.x = 0;
-  player.body.velocity.y = 0;
+	enemySpawner();
 
-  // Ronnie player controls - left/right 
-  if (cursors.left.isDown) {
-      // move player left with 150 speed
-      player.body.velocity.x = -150;
-      player.animations.play('left');
-  }
-  else if (cursors.right.isDown) {
-      // move player right with 150 speed
-      player.body.velocity.x = 150;
-      player.animations.play('right');
+  	// reset player movement (left/right/up/down)
+  	player.body.velocity.x = 0;
+  	player.body.velocity.y = 0;
+
+  	// player controls - left/right 
+  	if (cursors.left.isDown) {
+    	player.body.velocity.x = -150; // speed
+    	player.animations.play('left');
+  	}
+  	else if (cursors.right.isDown) {
+    	player.body.velocity.x = 150;
+    	player.animations.play('right');
  	}
-      
-  else {
-      // don't move 
-      player.animations.stop();
-      player.frame = 4;
-  }
+  	else {
+    	player.animations.stop();
+    	player.frame = 4;
+  	}
+  	// player controls - up/down 
+  	if (cursors.up.isDown) {
+  		player.body.velocity.y = -150;
+  		player.animations.play('up'); 
+  	}    
+  	else if (cursors.down.isDown) {
+  		player.body.velocity.y = 150;
+  		player.animations.play('down');
+  	}
+  	else {
+      	player.animations.stop();
+    	player.frame = 4;
+  	}
 
-  // Ronnie player controls - up/down 
-  if (cursors.up.isDown) {
-  	// move player up with 150 speed
-  	player.body.velocity.y = -150;
-  	player.animations.play('up'); 
-  }    
-  else if (cursors.down.isDown) {
-  	// move player down with 150 speed
-  	player.body.velocity.y = 150;
-  	player.animations.play('down');
-  }
-  else {
-      // don't move 
-      player.animations.stop();
-      player.frame = 4;
-  }
-
-  // Win conditional 
-  if (score === 100) {
-    game.paused = true;
-    game.add.text(100, 250, 'YOU WIN! WOO!', { fontSize: '50px', fill: '#000000' });
-    game.add.button(100, 350, 'button', actionOnClick, this)
-  }
-
+  	winGame(); 
 }
 
 
 
-function killRonnie (enemy, player) {
-  // game.pause = true;
- game.paused = true;
- game.add.text(80, 250, 'You lost. Press replay to start over', { fontSize: '40px', fill: '#ff0000' });
- game.add.button(355, 350, 'button', actionOnClick, this)
+function enemySpawner() {
+	if (game.nextEnemyAt < game.time.now && enemyPool.countDead() > 0) {
+		game.nextEnemyAt = game.time.now + game.enemyDelay;
+  		var enemy = enemyPool.getFirstExists(false);
+  		enemy.reset(game.rnd.integerInRange(20, 780), 0);
+  		enemy.body.velocity.y = game.rnd.integerInRange(30, 60);
+  		enemy.play('up');
+	}
+}
+
+
+function winGame () {
+	if (score === 100) {
+    	game.paused = true;
+    	game.add.text(275, 265, 'You win!', { fontSize: '55px', fill: 'white' });
+    	// game.add.button(100, 350, 'button', actionOnClick, this)
+  	}
+}
+
+function loseGame (enemy, player) {
+	audio1.play();
+ 	game.paused = true;
+ 	game.add.text(25, 265, 'Sooo, ya. You definitely died.', { fontSize: '55px', fill: 'white' });
+ 	// game.add.button(355, 350, 'button', actionOnClick, this)
 
 }
 
 function actionOnClick () {
-  game.state.restart();
+	game.state.restart();
 }
 
 
-
-var drinkMilk = function(player, milks) {
+function drinkMilk(player, milks) {
 	milks.kill();
 	score += 10;
 	scoreText.text = 'protein pts: ' + score;
 }  
 
-var createMilkLeft = function ()  {
+function createMilkLeft()  {
     milks.create(20 + Math.random() * 300, 450, 'milk');
     console.log('left milk created')
 }  
 
 
-var createMilkTopRight = function ()  {
+function createMilkTopRight()  {
     milks.create(450 + Math.random() * 300, 150, 'milk');
     console.log('top right milk created')
 }  
