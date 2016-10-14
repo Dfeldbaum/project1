@@ -2,14 +2,11 @@
 @bungee: 'Bungee Outline', cursive;
 @arcade: 'Press Start 2P', cursive;
 @white: rgba(255,255,255,1);
+@black: rgba(0,0,0,1);
 
 
 body {
-  background-color: rgba(0,0,0,1);
-}
-
-a {
-  color: #00B7FF;
+  background-color: @black
 }
 
 h1 {
@@ -18,40 +15,91 @@ h1 {
  	margin-left: auto;
  	margin-right: auto;
  	text-align: center;
- 	font-size: 3.4rem;
+ 	margin-top: -1%;
+ 	margin-bottom: -1%;
+ 	font-size: 330%;
  }
 
+p {
+ 	color: @white;
+ 	font-family: @arcade;
+ 	line-height: 2.5rem;
+ 	width: 100%;
+ 	margin-top: -1.5%;
+}
 
-// hr {
-// 	margin-left: auto;
-// 	margin-right: auto;
-// 	text-align: center;
-// 	size: 3.4rem;
-// 	color: @white;
+hr {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	width: 79.85%;
+	text-align: center;
+	color: @white;
+	position: relative;
+}
+
+.buttons {
+	padding: 1.5rem;
+	position: relative;
+	border: .15rem solid @white;
+	background-color: @black;
+	font-size: 1rem;
+	font-family: @arcade;
+	color: white;
+	margin: 0 auto;
+}
+
+
+// input {
+// 	margin-left: 47%;
+// 	margin-right: 47%;
+// 	padding: 5%;
+// 	font-size: 150%;
+// 	position: relative;
+// 	width: 30%;
 // }
 
 
-#gamediv {  
-	margin-top: auto;  
+#wrapper {
+	width: 70%;
+	margin: 0 auto;
+}
+
+#button-section {
+	text-align: center;
+} 
+
+#title {
+	margin-top: 4%;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}
+
+#story {
+	width: 79.8%;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}
+
+#controls {
+	width: 79.8%;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+}
+
+#gamediv {   
 	margin-left: auto;  
 	margin-right: auto;
+	position: relative;
 }
 
 #gamediv canvas {  
 	margin: 0px auto;  
 }
 
-#title {
-	margin-top: 3rem;
-	margin-bottom: 3rem;
-	margin-left: 2rem;
-	margin-right: 2rem;
-}
 
-#wrapper {
-	width: 70%;
-	margin: 0 auto;
-}
 
 
 
