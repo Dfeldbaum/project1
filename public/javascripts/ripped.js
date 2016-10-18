@@ -1,6 +1,8 @@
 console.log('linked');
 
 var start;
+var thriller = document.createElement('audio');
+thriller.src = 'audio/thriller.mp3'
 
 window.onload = function(){
 	start = document.getElementById('start');
@@ -11,6 +13,7 @@ window.onload = function(){
 function startGame(){
 
 	start.style.display = 'none';
+	thriller.play();
 
 	var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gamediv', { preload: preload, create: create, update: update });
 	var score = 0;
@@ -32,6 +35,7 @@ function startGame(){
 	    game.load.image('row', 'images/row-80.png');
 	    game.load.spritesheet('ronnie', 'images/ronniespritesheet2.png', 33, 48);
 	    game.load.spritesheet('grandpa', 'images/grandpa-2-cropped.png', 30, 48);
+	   	game.load.audio('thriller', 'audio/thriller.mp3');
 	    game.load.audio('oldman', 'audio/oldman.mp3');
 	    game.load.image('button', 'images/revive-button.png');    
 	}
@@ -336,7 +340,7 @@ function startGame(){
 
 
 	function winGame () {
-		if (score === 100) {
+		if (score === 500) {
 	    	game.paused = true;
 	    	game.add.text(275, 265, 'You win!', { fontSize: '55px', fill: 'white' });
 	    	// game.add.button(100, 350, 'button', actionOnClick, this)
