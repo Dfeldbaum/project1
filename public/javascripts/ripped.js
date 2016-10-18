@@ -349,6 +349,7 @@ function startGame(){
 
 	function loseGame (enemy, player) {
 		oldman.play();
+		thriller.pause();
 	 	game.paused = true;
 	 	game.add.text(25, 265, 'Sooo, ya. You definitely died.', { fontSize: '55px', fill: 'white' });
 	 	// game.add.button(355, 350, 'button', actionOnClick, this)
