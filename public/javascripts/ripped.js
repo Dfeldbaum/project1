@@ -37,11 +37,15 @@ function startGame(){
 	    game.load.spritesheet('grandpa', 'images/grandpa-2-cropped.png', 30, 48);
 	   	game.load.audio('thriller', 'audio/thriller.mp3');
 	    game.load.audio('oldman', 'audio/oldman.mp3');
+	    game.load.audio('potion', 'audio/potion.mp3');
 	    game.load.image('button', 'images/revive-button.png');    
 	}
 
 	var oldman = document.createElement('audio');
 	oldman.src = 'audio/oldman.mp3'
+
+	var potion = document.createElement('audio');
+	potion.src = 'audio/potion.mp3'
 
 	function create() {
 	    // game physics engine
@@ -357,6 +361,7 @@ function startGame(){
 	}
 
 	function drinkMilk(player, milks) {
+		potion.play();
 		milks.kill();
 		score += 10;
 		scoreText.text = 'protein pts: ' + score;
