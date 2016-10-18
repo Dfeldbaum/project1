@@ -24,6 +24,7 @@ function startGame(){
 
 	    game.load.image('wood', 'images/wood-800.png');
 	    game.load.image('milk', 'images/milk-carton-28.png');
+	    game.load.image('pizza', 'images/pizza-45.png');
 	    game.load.image('treadmill-up', 'images/treadmill-up-80.png');
 	    game.load.image('treadmill-down', 'images/treadmill-down-80.png');
 	    game.load.image('yogamat', 'images/yoga-mat-65.png');
@@ -38,6 +39,7 @@ function startGame(){
 	   	game.load.audio('thriller', 'audio/thriller.mp3');
 	    game.load.audio('oldman', 'audio/oldman.mp3');
 	    game.load.audio('potion', 'audio/potion.mp3');
+	   	game.load.audio('potion', 'audio/crunch.mp3');
 	    game.load.image('button', 'images/revive-button.png');    
 	}
 
@@ -46,6 +48,9 @@ function startGame(){
 
 	var potion = document.createElement('audio');
 	potion.src = 'audio/potion.mp3'
+
+	var crunch = document.createElement('audio');
+	crunch.src = 'audio/crunch.mp3'
 
 	function create() {
 	    // game physics engine
@@ -84,6 +89,11 @@ function startGame(){
 	    // milk protein group 
 	    milks = game.add.group();
 	    milks.enableBody = true;
+	    // milkTester = milks.create(270, 170, 'milk');
+
+	     // milk protein group 
+	    pizzas = game.add.group();
+	    pizzas.enableBody = true;
 	    // milkTester = milks.create(270, 170, 'milk');
 
 
@@ -255,6 +265,8 @@ function startGame(){
 	    game.time.events.add(Phaser.Timer.SECOND * 2, createInitialMilk, this);
 	    game.time.events.repeat(Phaser.Timer.SECOND * 5, 50, createMilkTop, this);
 	    game.time.events.repeat(Phaser.Timer.SECOND * 11, 50, createMilkBottom, this);
+	    game.time.events.repeat(Phaser.Timer.SECOND * 8, 50, createPizzaTop, this);
+	    game.time.events.repeat(Phaser.Timer.SECOND * 13, 50, createPizzaBottom, this);
 
 	}    
 
@@ -265,6 +277,7 @@ function startGame(){
 		seperationPhysics();
 		// overlap collision methods 
 		game.physics.arcade.overlap(player, milks, drinkMilk, null, this);
+		game.physics.arcade.overlap(player, pizzas, eatPizza, null, this);
 	  	game.physics.arcade.overlap(player, enemies, loseGame, null, this);  
 		enemySpawner();
 	  	// reset player movement (left/right/up/down)
@@ -357,7 +370,6 @@ function startGame(){
 	 	game.paused = true;
 	 	game.add.text(25, 265, 'Sooo, ya. You definitely died.', { fontSize: '55px', fill: 'white' });
 	 	// game.add.button(355, 350, 'button', actionOnClick, this)
-
 	}
 
 	function drinkMilk(player, milks) {
@@ -367,10 +379,16 @@ function startGame(){
 		scoreText.text = 'protein pts: ' + score;
 	}  
 
+	function eatPizza(player, pizzas) {
+		crunch.play();
+		pizzas.kill();
+		score -= 10;
+		scoreText.text = 'protein pts: ' + score;	
+	}
 
 	function createInitialMilk()  {
 	    milks.create(270 + Math.random() * 270, 170 + Math.random() * 300, 'milk');
-	    console.log('left milk created')
+	    console.log('left milk created');
 	}  
 
 	function createMilkTop()  {
@@ -380,9 +398,18 @@ function startGame(){
 
 	function createMilkBottom()  {
 	    milks.create(20 + Math.random() * 800, 420 + Math.random() * 20, 'milk');
-	    console.log('left milk created')
+	    console.log('left milk created');
 	}  
 
+	function createPizzaTop()  {
+	    pizzas.create(20 + Math.random() * 800, 150 + Math.random() * 20, 'pizza');
+	    console.log('top right pizza created');
+	}  
+
+	function createPizzaBottom()  {
+	    pizzas.create(20 + Math.random() * 800, 440 + Math.random() * 20, 'pizza');
+	    console.log('left pizza created');
+	}  
 
 }
 
