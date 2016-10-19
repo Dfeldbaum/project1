@@ -34,7 +34,7 @@ function startGame(){
 	    game.load.image('bench', 'images/bench-70.png');
 	    game.load.image('rack', 'images/rack-41.png');
 	    game.load.image('row', 'images/row-80.png');
-	    game.load.spritesheet('ronnie', 'images/ronniespritesheet2.png', 33, 48);
+	    game.load.spritesheet('ronnie', 'images/front-back-48.png', 36, 48);
 	    game.load.spritesheet('grandpa', 'images/grandpa-2-cropped.png', 30, 48);
 	   	game.load.audio('thriller', 'audio/thriller.mp3');
 	    game.load.audio('oldman', 'audio/oldman.mp3');
@@ -64,9 +64,9 @@ function startGame(){
 	    player = game.add.sprite(390, 300, 'ronnie');
 	    game.physics.arcade.enable(player);
 	    player.body.collideWorldBounds = true;
-	    player.animations.add('left', [1], 10, true);
-	    player.animations.add('right', [2], 10, true);
-	    player.animations.add('up', [0], 10, true);
+	    // player.animations.add('left', [1], 10, true);
+	    // player.animations.add('right', [2], 10, true);
+	    player.animations.add('up', [1], 10, true);
 	    player.animations.add('down', [0], 10, true);
 
 
