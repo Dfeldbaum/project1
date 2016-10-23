@@ -357,7 +357,7 @@ function startGame(){
 
 
 	function winGame () {
-		if (score === 500) {
+		if (score === 100) {
 	    	game.paused = true;
 	    	game.add.text(275, 265, 'You win!', { fontSize: '55px', fill: 'white' });
 	    	// game.add.button(100, 350, 'button', actionOnClick, this)
